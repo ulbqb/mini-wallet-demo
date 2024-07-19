@@ -30,6 +30,14 @@ export const EIP155_MAINNET_CHAINS: Record<string, EIP155Chain> = {
     rpc: 'https://cloudflare-eth.com/',
     namespace: 'eip155'
   },
+  'eip155:1001': {
+    chainId: 1001,
+    name: 'Klaytn Baobab',
+    logo: '/chain-logos/eip155-1001.png',
+    rgb: '24, 142, 150',
+    rpc: 'https://public-en-baobab.klaytn.net',
+    namespace: 'eip155'
+  },
   'eip155:43114': {
     chainId: 43114,
     name: 'Avalanche C-Chain',
