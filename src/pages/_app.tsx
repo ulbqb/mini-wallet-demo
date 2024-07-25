@@ -56,7 +56,7 @@ export default function App({ Component, pageProps }: AppProps) {
   pageProps.liffError = liffError
 
   // Step 1 - Initialize wallets and wallet connect client
-  const initialized = useInitialization()
+  const initialized = useInitialization(liffObject)
 
   // Step 2 - Once initialized, set up wallet connect event manager
   useWalletConnectEventsManager(initialized)
