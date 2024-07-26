@@ -9,12 +9,11 @@ import { createOrRestoreTronWallet } from '@/utils/TronWalletUtil'
 import { createOrRestoreTezosWallet } from '@/utils/TezosWalletUtil'
 import { createWeb3Wallet, web3wallet } from '@/utils/WalletConnectUtil'
 import { createOrRestoreKadenaWallet } from '@/utils/KadenaWalletUtil'
-import { IProvider } from "@web3auth/base";
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useSnapshot } from 'valtio'
 import useSmartAccounts from './useSmartAccounts'
 
-export default function useInitialization(provider: IProvider | null) {
+export default function useInitialization(privKey: string | unknown) {
   const [initialized, setInitialized] = useState(false)
   const prevRelayerURLValue = useRef<string>('')
 
@@ -23,7 +22,8 @@ export default function useInitialization(provider: IProvider | null) {
 
   const onInitialize = useCallback(async () => {
     try {
-      const { eip155Addresses, eip155Wallets } = createOrRestoreEIP155Wallet()
+      if (typeof privKey === "undefined" || privKey == "") return
+      const { eip155Addresses, eip155Wallets } = createOrRestoreEIP155Wallet(privKey)
       const { cosmosAddresses } = await createOrRestoreCosmosWallet()
       const { solanaAddresses } = await createOrRestoreSolanaWallet()
       const { polkadotAddresses } = await createOrRestorePolkadotWallet()
@@ -50,7 +50,7 @@ export default function useInitialization(provider: IProvider | null) {
       alert(err)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [relayerRegionURL])
+  }, [relayerRegionURL, privKey])
 
   // restart transport if relayer region changes
   const onRelayerRegionChange = useCallback(() => {
@@ -60,7 +60,7 @@ export default function useInitialization(provider: IProvider | null) {
     } catch (err: unknown) {
       alert(err)
     }
-  }, [relayerRegionURL])
+  }, [relayerRegionURL, privKey])
 
   useEffect(() => {
     if (!initialized) {
@@ -69,7 +69,7 @@ export default function useInitialization(provider: IProvider | null) {
     if (prevRelayerURLValue.current !== relayerRegionURL) {
       onRelayerRegionChange()
     }
-  }, [initialized, onInitialize, relayerRegionURL, onRelayerRegionChange])
+  }, [initialized, onInitialize, relayerRegionURL, onRelayerRegionChange, privKey])
 
   return initialized
 }

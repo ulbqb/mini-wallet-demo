@@ -13,20 +13,18 @@ let address2: string
 /**
  * Utilities
  */
-export function createOrRestoreEIP155Wallet() {
-  const mnemonic1 = localStorage.getItem('EIP155_MNEMONIC_1')
-  const mnemonic2 = localStorage.getItem('EIP155_MNEMONIC_2')
+export function createOrRestoreEIP155Wallet(privKey: string) {
+  const mnemonic = localStorage.getItem('EIP155_MNEMONIC')
 
-  if (mnemonic1 && mnemonic2) {
-    wallet1 = EIP155Lib.init({ mnemonic: mnemonic1 })
-    wallet2 = EIP155Lib.init({ mnemonic: mnemonic2 })
+  if (mnemonic && privKey) {
+    wallet1 = EIP155Lib.initFromPrivKey(privKey)
+    wallet2 = EIP155Lib.init({ mnemonic: mnemonic })
   } else {
-    wallet1 = EIP155Lib.init({})
+    wallet1 = EIP155Lib.initFromPrivKey(privKey)
     wallet2 = EIP155Lib.init({})
 
     // Don't store mnemonic in local storage in a production project!
-    localStorage.setItem('EIP155_MNEMONIC_1', wallet1.getMnemonic())
-    localStorage.setItem('EIP155_MNEMONIC_2', wallet2.getMnemonic())
+    localStorage.setItem('EIP155_MNEMONIC', wallet2.getMnemonic())
   }
 
   address1 = wallet1.getAddress()

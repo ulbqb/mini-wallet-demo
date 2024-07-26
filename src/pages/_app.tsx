@@ -57,6 +57,7 @@ web3auth.configureAdapter(openloginAdapter);
 export default function App({ Component, pageProps }: AppProps) {
   const [provider, setProvider] = useState<IProvider | null>(null);
   const [loggedIn, setLoggedIn] = useState(false);
+  const [privKey, setPrivKey] = useState<string | unknown>("");
   // LIFF
   const [liffObject, setLiffObject] = useState<Liff | null>(null)
   const [liffError, setLiffError] = useState<string | null>(null)
@@ -101,14 +102,6 @@ export default function App({ Component, pageProps }: AppProps) {
 
         if (web3auth.connected) {
           setLoggedIn(true);
-          if (!provider) {
-            console.log("provider not initialized yet");
-            return;
-          }
-          // get privatekey request
-          const privateKey = await provider.request({
-            method: "eth_private_key"
-          })
         } else {
           let web3authProvider
           console.log(web3auth)
@@ -137,13 +130,29 @@ export default function App({ Component, pageProps }: AppProps) {
     init()
   }, [])
 
+  useEffect(() => {
+    const keyGet = async () => {
+      if (!provider) {
+        console.log("provider not initialized yet");
+        return;
+      }
+      // get privatekey request
+      const privateKey = await provider.request({
+        method: "eth_private_key"
+      })
+      setPrivKey(privateKey)
+    }
+    keyGet()
+    console.log(privKey)
+  }, [provider])
+
   // Provide `liff` object and `liffError` object
   // to page component as property
   pageProps.liff = liffObject
   pageProps.liffError = liffError
 
   // Step 1 - Initialize wallets and wallet connect client
-  const initialized = useInitialization(liffObject)
+  const initialized = useInitialization(privKey)
 
   // Step 2 - Once initialized, set up wallet connect event manager
   useWalletConnectEventsManager(initialized)

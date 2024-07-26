@@ -32,6 +32,12 @@ export default class EIP155Lib implements EIP155Wallet {
     return new EIP155Lib(wallet)
   }
 
+  static initFromPrivKey(privKey: string) {
+    const wallet = new Wallet(privKey)
+
+    return new EIP155Lib(wallet)
+  }
+
   getMnemonic() {
     return this.wallet.mnemonic.phrase
   }
