@@ -8,13 +8,55 @@ import useInitialization from '@/hooks/useInitialization'
 import useWalletConnectEventsManager from '@/hooks/useWalletConnectEventsManager'
 import { web3wallet } from '@/utils/WalletConnectUtil'
 import { RELAYER_EVENTS } from '@walletconnect/core'
+import { CHAIN_NAMESPACES, IProvider, WALLET_ADAPTERS, WEB3AUTH_NETWORK } from "@web3auth/base";
+import { EthereumPrivateKeyProvider } from "@web3auth/ethereum-provider";
+import { Web3AuthNoModal } from "@web3auth/no-modal";
+import { OpenloginAdapter } from "@web3auth/openlogin-adapter";
 import { AppProps } from 'next/app'
 import '../../public/main.css'
 import { styledToast } from '@/utils/HelperUtil'
 
 import type { Liff } from '@line/liff'
 
+const clientId = "BAvU0yqzqJ_QoZ0ebPVAwC8wb6g3RDzQAtvRUsBfkofe26S0cAOvOjr-Y4Ofg-FeFql0YTnCEMI-u_qq7PI7S38"; // get from https://dashboard.web3auth.io
+
+const chainConfig = {
+    chainNamespace: CHAIN_NAMESPACES.EIP155,
+    chainId: "0x1", // Please use 0x1 for Mainnet
+    rpcTarget: "https://rpc.ankr.com/eth",
+    displayName: "Ethereum Mainnet",
+    blockExplorerUrl: "https://etherscan.io/",
+    ticker: "ETH",
+    tickerName: "Ethereum",
+    logo: "https://cryptologos.cc/logos/ethereum-eth-logo.png",
+};
+
+const privateKeyProvider = new EthereumPrivateKeyProvider({ config: { chainConfig } });
+
+const web3auth = new Web3AuthNoModal({
+    clientId,
+    web3AuthNetwork: WEB3AUTH_NETWORK.SAPPHIRE_DEVNET,
+    privateKeyProvider,
+});
+
+const openloginAdapter = new OpenloginAdapter({
+    adapterSettings: {
+        uxMode: "redirect",
+        loginConfig: {
+            jwt: {
+                verifier: "line-liff-jwt-verifier",
+                typeOfLogin: "jwt",
+                clientId: "BAvU0yqzqJ_QoZ0ebPVAwC8wb6g3RDzQAtvRUsBfkofe26S0cAOvOjr-Y4Ofg-FeFql0YTnCEMI-u_qq7PI7S38",
+            },
+        },
+    },
+    privateKeyProvider,
+});
+web3auth.configureAdapter(openloginAdapter);
+
 export default function App({ Component, pageProps }: AppProps) {
+  const [provider, setProvider] = useState<IProvider | null>(null);
+  const [loggedIn, setLoggedIn] = useState(false);
   // LIFF
   const [liffObject, setLiffObject] = useState<Liff | null>(null)
   const [liffError, setLiffError] = useState<string | null>(null)
@@ -48,6 +90,51 @@ export default function App({ Component, pageProps }: AppProps) {
             setLiffError(error.toString())
           })
       })
+
+    const init = async () => {
+      try {
+        // IMP START - SDK Initialization
+        await web3auth.init();
+        // IMP END - SDK Initialization
+        setProvider(web3auth.provider);
+        console.log(web3auth)
+
+        if (web3auth.connected) {
+          setLoggedIn(true);
+          if (!provider) {
+            console.log("provider not initialized yet");
+            return;
+          }
+          // get privatekey request
+          const privateKey = await provider.request({
+            method: "eth_private_key"
+          })
+        } else {
+          let web3authProvider
+          console.log(web3auth)
+          if (liff?.isInClient()) {
+            const id_token = liff?.getIDToken()
+            web3authProvider = await web3auth.connectTo(WALLET_ADAPTERS.OPENLOGIN, {
+              loginProvider: "jwt",
+              extraLoginOptions: {
+                id_token: id_token, // in JWT Format
+                verifierIdField: "sub", // same as your JWT Verifier ID
+              },
+            });
+          }
+          web3authProvider = await web3auth.connectTo(WALLET_ADAPTERS.OPENLOGIN, {
+            loginProvider: "line",
+          });
+          setProvider(web3authProvider);
+          if (web3auth.connected) {
+            setLoggedIn(true);
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    init()
   }, [])
 
   // Provide `liff` object and `liffError` object
