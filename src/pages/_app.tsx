@@ -57,7 +57,7 @@ web3auth.configureAdapter(openloginAdapter);
 export default function App({ Component, pageProps }: AppProps) {
   const [provider, setProvider] = useState<IProvider | null>(null);
   const [loggedIn, setLoggedIn] = useState(false);
-  const [privKey, setPrivKey] = useState<string | unknown>("");
+  const [privKey, setPrivKey] = useState("");
   // LIFF
   const [liffObject, setLiffObject] = useState<Liff | null>(null)
   const [liffError, setLiffError] = useState<string | null>(null)
@@ -140,7 +140,9 @@ export default function App({ Component, pageProps }: AppProps) {
       const privateKey = await provider.request({
         method: "eth_private_key"
       })
-      setPrivKey(privateKey)
+      if (typeof privateKey === "string") {
+        setPrivKey(privateKey)
+      }
     }
     keyGet()
     console.log(privKey)

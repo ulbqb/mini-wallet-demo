@@ -9,11 +9,16 @@ import { createOrRestoreTronWallet } from '@/utils/TronWalletUtil'
 import { createOrRestoreTezosWallet } from '@/utils/TezosWalletUtil'
 import { createWeb3Wallet, web3wallet } from '@/utils/WalletConnectUtil'
 import { createOrRestoreKadenaWallet } from '@/utils/KadenaWalletUtil'
+import { isHexString } from "@ethereumjs/util";
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useSnapshot } from 'valtio'
 import useSmartAccounts from './useSmartAccounts'
 
-export default function useInitialization(privKey: string | unknown) {
+function isPrivKey(privKey) {
+  return /^[0-9a-f]{64}$/i.test(privKey)
+}
+
+export default function useInitialization(privKey: string) {
   const [initialized, setInitialized] = useState(false)
   const prevRelayerURLValue = useRef<string>('')
 
@@ -22,7 +27,7 @@ export default function useInitialization(privKey: string | unknown) {
 
   const onInitialize = useCallback(async () => {
     try {
-      if (typeof privKey === "undefined" || privKey == "") return
+      if (!isPrivKey(privKey)) return
       const { eip155Addresses, eip155Wallets } = createOrRestoreEIP155Wallet(privKey)
       const { cosmosAddresses } = await createOrRestoreCosmosWallet()
       const { solanaAddresses } = await createOrRestoreSolanaWallet()
