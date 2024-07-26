@@ -39,6 +39,10 @@ export default class EIP155Lib implements EIP155Wallet {
   }
 
   getMnemonic() {
+    if (this.wallet.mnemonic == null) {
+      console.warn("This EIP155Wallet doesn't have a mnemonic because it was generated from a PrivateKey.")
+      return ""
+    }
     return this.wallet.mnemonic.phrase
   }
 
