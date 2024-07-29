@@ -3,7 +3,7 @@ import type { Liff } from '@line/liff'
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { Fragment } from 'react'
-import { Button } from '@nextui-org/react'
+import { Button, Container } from '@nextui-org/react'
 
 const Dapp: NextPage<{ liff: Liff | null; liffError: string | null }> = ({ liff, liffError }) => {
   const router = useRouter()
@@ -22,10 +22,21 @@ const Dapp: NextPage<{ liff: Liff | null; liffError: string | null }> = ({ liff,
   }
   return (
     <Fragment>
-      <PageHeader title="Open dApp" />
-      <Button size="lg" onClick={openDapp}>
-        Open
-      </Button>
+      <Container
+        display="flex"
+        justify="center"
+        alignItems="center"
+        css={{
+          width: '100%',
+          height: '100%',
+          paddingLeft: 0,
+          paddingRight: 0
+        }}
+      >
+        <Button size="lg" onClick={openDapp}>
+          Open
+        </Button>
+      </Container>
     </Fragment>
   )
 }
