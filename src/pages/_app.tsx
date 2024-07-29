@@ -18,7 +18,7 @@ import { styledToast } from '@/utils/HelperUtil'
 
 import type { Liff } from '@line/liff'
 
-const clientId = process.env.NEXT_PUBLIC_WEB3AUTH_CLIENT_ID
+const clientId = process.env.NEXT_PUBLIC_WEB3AUTH_CLIENT_ID as string
 
 const chainConfig = {
     chainNamespace: CHAIN_NAMESPACES.EIP155,

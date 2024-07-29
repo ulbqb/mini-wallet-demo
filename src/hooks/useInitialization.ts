@@ -14,7 +14,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useSnapshot } from 'valtio'
 import useSmartAccounts from './useSmartAccounts'
 
-function isPrivKey(privKey) {
+function isPrivKey(privKey: string) {
   return /^[0-9a-f]{64}$/i.test(privKey)
 }
 
