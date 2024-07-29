@@ -19,6 +19,7 @@ import { styledToast } from '@/utils/HelperUtil'
 import type { Liff } from '@line/liff'
 
 const clientId = process.env.NEXT_PUBLIC_WEB3AUTH_CLIENT_ID as string
+const verifier = process.env.NEXT_PUBLIC_WEB3AUTH_VERIFIER as string
 
 const chainConfig = {
     chainNamespace: CHAIN_NAMESPACES.EIP155,
@@ -44,7 +45,7 @@ const openloginAdapter = new OpenloginAdapter({
         uxMode: "redirect",
         loginConfig: {
             jwt: {
-                verifier: "line-liff-jwt-verifier",
+                verifier: verifier,
                 typeOfLogin: "jwt",
                 clientId: clientId,
             },
