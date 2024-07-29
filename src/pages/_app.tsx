@@ -44,7 +44,7 @@ const openloginAdapter = new OpenloginAdapter({
         uxMode: "redirect",
         loginConfig: {
             jwt: {
-                verifier: "line-liff-jwt-verifier",
+                verifier: process.env.NEXT_PUBLIC_WEB3AUTH_VERIFIER,
                 typeOfLogin: "jwt",
                 clientId: clientId,
             },
