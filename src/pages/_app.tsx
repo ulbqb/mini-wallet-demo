@@ -18,7 +18,7 @@ import { styledToast } from '@/utils/HelperUtil'
 
 import type { Liff } from '@line/liff'
 
-const clientId = "BAvU0yqzqJ_QoZ0ebPVAwC8wb6g3RDzQAtvRUsBfkofe26S0cAOvOjr-Y4Ofg-FeFql0YTnCEMI-u_qq7PI7S38"; // get from https://dashboard.web3auth.io
+const clientId = process.env.NEXT_PUBLIC_WEB3AUTH_CLIENT_ID
 
 const chainConfig = {
     chainNamespace: CHAIN_NAMESPACES.EIP155,
@@ -46,7 +46,7 @@ const openloginAdapter = new OpenloginAdapter({
             jwt: {
                 verifier: "line-liff-jwt-verifier",
                 typeOfLogin: "jwt",
-                clientId: "BAvU0yqzqJ_QoZ0ebPVAwC8wb6g3RDzQAtvRUsBfkofe26S0cAOvOjr-Y4Ofg-FeFql0YTnCEMI-u_qq7PI7S38",
+                clientId: clientId,
             },
         },
     },
