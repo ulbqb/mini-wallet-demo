@@ -13,20 +13,29 @@ let address2: string
 /**
  * Utilities
  */
-export function createOrRestoreEIP155Wallet() {
-  const mnemonic1 = localStorage.getItem('EIP155_MNEMONIC_1')
-  const mnemonic2 = localStorage.getItem('EIP155_MNEMONIC_2')
+// If a private key is given, it will be initialized with that key.
+// Otherwise, if there is key information in localstorage, it will be restored from there, otherwise it will be generated randomly.
+export function createOrRestoreEIP155Wallet(privKey?: string) {
+  const knownPrivKey = privKey ? privKey : localStorage.getItem('EIP155_PRIVKEY')
+  const mnemonic = localStorage.getItem('EIP155_MNEMONIC')
 
-  if (mnemonic1 && mnemonic2) {
-    wallet1 = EIP155Lib.init({ mnemonic: mnemonic1 })
-    wallet2 = EIP155Lib.init({ mnemonic: mnemonic2 })
+  if (mnemonic && knownPrivKey) {
+    wallet1 = EIP155Lib.initFromPrivKey(knownPrivKey)
+    wallet2 = EIP155Lib.init({ mnemonic: mnemonic })
+  } else if (knownPrivKey) {
+    wallet1 = EIP155Lib.initFromPrivKey(knownPrivKey)
+    wallet2 = EIP155Lib.init({})
+
+    // Don't store mnemonic in local storage in a production project!
+    localStorage.setItem('EIP155_PRIVKEY', wallet1.getPrivateKey())
+    localStorage.setItem('EIP155_MNEMONIC', wallet2.getMnemonic())
   } else {
     wallet1 = EIP155Lib.init({})
     wallet2 = EIP155Lib.init({})
 
     // Don't store mnemonic in local storage in a production project!
-    localStorage.setItem('EIP155_MNEMONIC_1', wallet1.getMnemonic())
-    localStorage.setItem('EIP155_MNEMONIC_2', wallet2.getMnemonic())
+    localStorage.setItem('EIP155_PRIVKEY', wallet1.getPrivateKey())
+    localStorage.setItem('EIP155_MNEMONIC', wallet2.getMnemonic())
   }
 
   address1 = wallet1.getAddress()
