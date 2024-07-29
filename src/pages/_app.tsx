@@ -98,13 +98,11 @@ export default function App({ Component, pageProps }: AppProps) {
         await web3auth.init();
         // IMP END - SDK Initialization
         setProvider(web3auth.provider);
-        console.log(web3auth)
 
         if (web3auth.connected) {
           setLoggedIn(true);
         } else {
           let web3authProvider
-          console.log(web3auth)
           if (liff?.isInClient()) {
             const id_token = liff?.getIDToken()
             web3authProvider = await web3auth.connectTo(WALLET_ADAPTERS.OPENLOGIN, {
@@ -145,7 +143,6 @@ export default function App({ Component, pageProps }: AppProps) {
       }
     }
     keyGet()
-    console.log(privKey)
   }, [provider])
 
   // Provide `liff` object and `liffError` object
