@@ -1,5 +1,4 @@
 import AccountCard from '@/components/AccountCard'
-import AccountPicker from '@/components/AccountPicker'
 import PageHeader from '@/components/PageHeader'
 import { COSMOS_MAINNET_CHAINS } from '@/data/COSMOSData'
 import { EIP155_MAINNET_CHAINS, EIP155_TEST_CHAINS } from '@/data/EIP155Data'
@@ -35,9 +34,7 @@ export default function HomePage() {
   const { push } = useRouter()
   return (
     <Fragment>
-      <PageHeader title="Accounts">
-        <AccountPicker data-testid="account-picker" />
-      </PageHeader>
+      <PageHeader title="Accounts"></PageHeader>
       <Text h4 css={{ marginBottom: '$5' }}>
         Mainnets
       </Text>
