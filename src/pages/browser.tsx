@@ -2,12 +2,11 @@ import PageHeader from '@/components/PageHeader'
 import type { Liff } from '@line/liff'
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment, useEffect } from 'react'
 import ModalStore from '@/store/ModalStore'
 import { parseUri } from '@walletconnect/utils'
 import { styledToast } from '@/utils/HelperUtil'
 import { web3wallet } from '@/utils/WalletConnectUtil'
-import { Input } from '@nextui-org/react'
 
 const Browser: NextPage<{ liff: Liff | null; liffError: string | null }> = ({
   liff,
@@ -21,6 +20,7 @@ const Browser: NextPage<{ liff: Liff | null; liffError: string | null }> = ({
   }
 
   useEffect(() => {
+    styledToast('This dApp is running on Mini Wallet!', 'success')
     window.addEventListener('message', (e: MessageEvent) => {
       if (e.data.type == 'display_uri') {
         ModalStore.open('LoadingModal', { loadingMessage: '' })
@@ -55,26 +55,24 @@ const Browser: NextPage<{ liff: Liff | null; liffError: string | null }> = ({
     }
   }
 
-  function setLineFlag(url: string): string {
-    const parsedUrl = new URL(url)
+  function setLineFlag(urlStr: string): string {
+    const parsedUrl = new URL(urlStr)
     parsedUrl.searchParams.append('is_line', '')
     return parsedUrl.toString()
   }
 
   return (
     <Fragment>
-      <PageHeader title="Browser" />
-      <Input css={{ width: '100%' }} disabled readOnly bordered value={url} />
       <iframe
         src={setLineFlag(url)}
         style={{
           position: 'relative',
-          top: 10,
+          top: 0,
           left: 0,
           bottom: 0,
           right: 0,
           width: '100%',
-          height: '80%',
+          height: '100%',
           border: 'none',
           margin: 0,
           padding: 0,

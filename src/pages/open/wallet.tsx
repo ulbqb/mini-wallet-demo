@@ -3,7 +3,7 @@ import type { Liff } from '@line/liff'
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { Fragment } from 'react'
-import { Button } from '@nextui-org/react'
+import { Button, Container } from '@nextui-org/react'
 
 const Wallet: NextPage<{ liff: Liff | null; liffError: string | null }> = ({ liff, liffError }) => {
   const router = useRouter()
@@ -13,16 +13,27 @@ const Wallet: NextPage<{ liff: Liff | null; liffError: string | null }> = ({ lif
     url = query.url
   }
 
-  const openDapp = () => {
+  const openWallet = () => {
     liff?.closeWindow()
     router.push(url)
   }
   return (
     <Fragment>
-      <PageHeader title="Open Wallet" />
-      <Button size="lg" onClick={openDapp}>
-        Open
-      </Button>
+      <Container
+        display="flex"
+        justify="center"
+        alignItems="center"
+        css={{
+          width: '100%',
+          height: '100%',
+          paddingLeft: 0,
+          paddingRight: 0
+        }}
+      >
+        <Button size="lg" onClick={openWallet}>
+          Open
+        </Button>
+      </Container>
     </Fragment>
   )
 }
