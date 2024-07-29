@@ -64,6 +64,41 @@ export default function App({ Component, pageProps }: AppProps) {
 
   // Execute liff.init() when the app is initialized
   useEffect(() => {
+    // Obtain a provider using initialized liff and web3auth
+    const initProvider = async (liff: Liff) => {
+      try {
+        // IMP START - SDK Initialization
+        await web3auth.init();
+        // IMP END - SDK Initialization
+        setProvider(web3auth.provider);
+
+        if (web3auth.connected) {
+          setLoggedIn(true);
+        } else {
+          let web3authProvider
+          if (liff.isInClient()) {
+            const id_token = liff.getIDToken()
+            web3authProvider = await web3auth.connectTo(WALLET_ADAPTERS.OPENLOGIN, {
+              loginProvider: "jwt",
+              extraLoginOptions: {
+                id_token: id_token, // in JWT Format
+                verifierIdField: "sub", // same as your JWT Verifier ID
+              },
+            });
+          }
+          web3authProvider = await web3auth.connectTo(WALLET_ADAPTERS.OPENLOGIN, {
+            loginProvider: "line",
+          });
+          setProvider(web3authProvider);
+          if (web3auth.connected) {
+            setLoggedIn(true);
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
     // to avoid `window is not defined` error
     import('@line/liff')
       .then(liff => liff.default)
@@ -85,47 +120,13 @@ export default function App({ Component, pageProps }: AppProps) {
           .then(() => {
             console.log('LIFF init succeeded.')
             setLiffObject(liff)
+            initProvider(liff)
           })
           .catch((error: Error) => {
             console.log('LIFF init failed.')
             setLiffError(error.toString())
           })
       })
-
-    const init = async () => {
-      try {
-        // IMP START - SDK Initialization
-        await web3auth.init();
-        // IMP END - SDK Initialization
-        setProvider(web3auth.provider);
-
-        if (web3auth.connected) {
-          setLoggedIn(true);
-        } else {
-          let web3authProvider
-          if (liff?.isInClient()) {
-            const id_token = liff?.getIDToken()
-            web3authProvider = await web3auth.connectTo(WALLET_ADAPTERS.OPENLOGIN, {
-              loginProvider: "jwt",
-              extraLoginOptions: {
-                id_token: id_token, // in JWT Format
-                verifierIdField: "sub", // same as your JWT Verifier ID
-              },
-            });
-          }
-          web3authProvider = await web3auth.connectTo(WALLET_ADAPTERS.OPENLOGIN, {
-            loginProvider: "line",
-          });
-          setProvider(web3authProvider);
-          if (web3auth.connected) {
-            setLoggedIn(true);
-          }
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    }
-    init()
   }, [])
 
   useEffect(() => {
