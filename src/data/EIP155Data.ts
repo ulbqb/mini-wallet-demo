@@ -22,20 +22,20 @@ export type EIP155Chain = {
  * Chains
  */
 export const EIP155_MAINNET_CHAINS: Record<string, EIP155Chain> = {
+  'eip155:8217': {
+    chainId: 8217,
+    name: 'Klaytn Cypress',
+    logo: '/chain-logos/eip155-8217.png',
+    rgb: '59, 238, 46',
+    rpc: 'https://public-en-cypress.klaytn.net',
+    namespace: 'eip155'
+  },
   'eip155:1': {
     chainId: 1,
     name: 'Ethereum',
     logo: '/chain-logos/eip155-1.png',
     rgb: '99, 125, 234',
     rpc: 'https://cloudflare-eth.com/',
-    namespace: 'eip155'
-  },
-  'eip155:1001': {
-    chainId: 1001,
-    name: 'Klaytn Baobab',
-    logo: '/chain-logos/eip155-1001.png',
-    rgb: '24, 142, 150',
-    rpc: 'https://public-en-baobab.klaytn.net',
     namespace: 'eip155'
   },
   'eip155:43114': {
@@ -73,6 +73,14 @@ export const EIP155_MAINNET_CHAINS: Record<string, EIP155Chain> = {
 }
 
 export const EIP155_TEST_CHAINS: Record<string, EIP155Chain> = {
+  'eip155:1001': {
+    chainId: 1001,
+    name: 'Klaytn Baobab',
+    logo: '/chain-logos/eip155-8217.png',
+    rgb: '59, 238, 46',
+    rpc: 'https://public-en-baobab.klaytn.net',
+    namespace: 'eip155'
+  },
   'eip155:5': {
     chainId: 5,
     name: 'Ethereum Goerli',
