@@ -9,7 +9,7 @@ const Logout: NextPage<{ liff: Liff | null; web3auth: Web3AuthNoModal | null }> 
   web3auth
 }) => {
   web3auth?.logout().then(() => {
-    liff?.closeWindow
+    liff?.closeWindow()
   })
   return (
     <Fragment>
