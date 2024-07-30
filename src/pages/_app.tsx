@@ -78,19 +78,13 @@ export default function App({ Component, pageProps, router }: AppProps) {
         if (web3auth.connected) {
           setLoggedIn(true)
         } else {
-          let web3authProvider
-          if (liff.isInClient()) {
-            const id_token = liff.getIDToken()
-            web3authProvider = await web3auth.connectTo(WALLET_ADAPTERS.OPENLOGIN, {
-              loginProvider: 'jwt',
-              extraLoginOptions: {
-                id_token: id_token, // in JWT Format
-                verifierIdField: 'sub' // same as your JWT Verifier ID
-              }
-            })
-          }
-          web3authProvider = await web3auth.connectTo(WALLET_ADAPTERS.OPENLOGIN, {
-            loginProvider: 'line'
+          const id_token = liff.getIDToken()
+          const web3authProvider = await web3auth.connectTo(WALLET_ADAPTERS.OPENLOGIN, {
+            loginProvider: 'jwt',
+            extraLoginOptions: {
+              id_token: id_token, // in JWT Format
+              verifierIdField: 'sub' // same as your JWT Verifier ID
+            }
           })
           setProvider(web3authProvider)
           if (web3auth.connected) {
@@ -122,6 +116,10 @@ export default function App({ Component, pageProps, router }: AppProps) {
           .init({ liffId })
           .then(() => {
             console.log('LIFF init succeeded.')
+            if (!liff.isInClient() && !liff.isLoggedIn()) {
+              liff.login()
+            }
+            console.log('LIFF login succeeded.')
             setLiffObject(liff)
             initProvider(liff)
           })
