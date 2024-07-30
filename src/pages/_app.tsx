@@ -162,6 +162,9 @@ export default function App({ Component, pageProps, router }: AppProps) {
   pageProps.liff = liffObject
   pageProps.liffError = liffError
 
+  // Provide `web3auth` object
+  pageProps.web3auth = web3auth
+
   // Step 1 - Initialize wallets and wallet connect client
   const initialized = useInitialization(privKey)
 
